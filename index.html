@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* VOICE: streetwear / manga drop: sicuro, veloce, da poster
-   IDEA: ogni livello è una "collezione" stampata su una card bianca, con il suo colore acido e il suo manichino
+   IDEA: ogni livello \e8  una "collezione" stampata su una card bianca, con il suo colore acido e il suo manichino
    PICTURE: pannello colore pieno con titolo condensato gigante, manichino a sticker e colonna laterale con i controlli
    COLOUR and TYPE: grafite + card bianche, colore per livello (lime, arancio, ciano, viola, rosa), nero per i pulsanti. Anton + Outfit
    LAYOUT: hero a 3 colonne nella card, striscia livelli sotto, poi libreria a corsie e bento con focus e fonti */
@@ -90,10 +90,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,label:focus-within{outl
 .laneH{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:10px 12px;border-radius:20px 20px 0 0;color:#111}
 .laneH b{font:400 18px/1 Anton,sans-serif;text-transform:uppercase}.laneH span{font:400 20px Anton,sans-serif}
 .lane.inbox .laneH{background:#111;color:#fff}
-.laneB{padding:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-content:start;flex:1;max-height:360px;overflow:auto}
+.laneB{padding:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-content:start;flex:1;max-height:520px;overflow:auto}
 .empty{grid-column:1/-1;font-size:13px;color:var(--mute);text-align:center;padding:18px 6px}
-.th{position:relative;aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:#ddd;cursor:grab}
-.th img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.th{position:relative;height:0;padding-bottom:133%;border-radius:12px;overflow:hidden;background:#ddd;cursor:grab}
+.th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .th .ops{position:absolute;inset:auto 0 0 0;display:flex;flex-wrap:wrap;gap:3px;padding:4px;background:linear-gradient(transparent,rgba(0,0,0,.75));opacity:0;transition:opacity .15s}
 .th:hover .ops,.th:focus-within .ops{opacity:1}
 @media(hover:none){.th .ops{opacity:1}}
@@ -101,6 +101,24 @@ button:focus-visible,a:focus-visible,input:focus-visible,label:focus-within{outl
 .ops .x{background:#fff;margin-left:auto;font:600 14px Outfit}
 .libFoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:14px;color:var(--mute)}
 .lk{background:none;border:0;color:#c2341b;font-weight:600;cursor:pointer;min-height:36px;padding:0}
+/* selection */
+.lanes{user-select:none;-webkit-user-select:none}
+.th.sel{outline:3px solid #2f6bff;outline-offset:-3px}
+.th.sel::after{content:"";position:absolute;top:6px;left:6px;width:22px;height:22px;border-radius:50%;background:#2f6bff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat;box-shadow:0 0 0 2px #fff}
+.marq{position:fixed;border:1.5px solid #2f6bff;background:rgba(47,107,255,.12);pointer-events:none;z-index:8;border-radius:6px;display:none}
+.laneH .all{border:0;background:rgba(255,255,255,.55);color:#111;border-radius:999px;min-height:28px;padding:0 10px;font:600 12px Outfit,sans-serif;cursor:pointer;margin-left:auto}
+.lane.inbox .laneH .all{background:rgba(255,255,255,.2);color:#fff}
+.selbar{position:sticky;bottom:14px;z-index:5;display:none;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;background:#111;color:#fff;border-radius:22px;padding:10px 12px 10px 18px;box-shadow:0 16px 40px -14px rgba(0,0,0,.6)}
+.selbar.on{display:flex}
+.selbar b{font:400 22px Anton,sans-serif;margin-right:6px}
+.selbar .lab2{font-size:13px;color:#b9b9b9}
+.selbar .mv{display:flex;gap:6px;flex-wrap:wrap}
+.selbar .mv button{min-width:40px;height:40px;border-radius:999px;border:0;font:400 15px Anton,sans-serif;color:#111;cursor:pointer;padding:0 10px}
+.selbar .act{min-height:40px;border-radius:999px;border:1.5px solid #444;background:transparent;color:#fff;font-weight:600;padding:0 14px;cursor:pointer}
+.selbar .act.danger{border-color:#7a2e22;color:#ff8a70}
+.selbar .sp{flex:1}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.quick .chip{min-width:44px;min-height:34px;font-size:13px}
 /* pinterest import */
 .pinbar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin-top:12px}
 .pinbar input{min-height:52px;border:2px solid #111;border-radius:999px;padding:0 20px;font:16px Outfit,sans-serif;background:#fff;color:#141416}
@@ -155,7 +173,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,label:focus-within{outl
 .mcard .cardH{position:sticky;top:-24px;background:#fff;padding-top:4px;z-index:1}
 .x2{width:48px;height:48px;border-radius:50%;border:0;background:#111;color:#fff;font-size:20px;cursor:pointer;flex:none}
 .ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
-.ggrid .th{aspect-ratio:3/4;cursor:default}
+.ggrid .th{cursor:default}
 footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
 /* session */
 #ses{position:fixed;inset:0;background:#0e0e10;color:#f1f0ea;display:none;grid-template-rows:auto minmax(0,1fr) auto;z-index:10}
@@ -193,12 +211,12 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
     <div class="panel" id="panel">
       <div class="ghost" id="ghost" aria-hidden="true"></div>
       <div class="left">
-        <div class="nav"><button id="prevLv" aria-label="Livello precedente">◀</button><button id="nextLv" aria-label="Livello successivo">▶</button><span id="lvCode">01</span></div>
+        <div class="nav"><button id="prevLv" aria-label="Livello precedente">&#x25c0;</button><button id="nextLv" aria-label="Livello successivo">&#x25b6;</button><span id="lvCode">01</span></div>
         <div>
           <h1 class="ttl disp" id="lvTitle"></h1>
           <p class="sub" id="lvDesc"></p>
         </div>
-        <a class="pill" href="#focus">Come allenarlo <span aria-hidden="true">▷</span></a>
+        <a class="pill" href="#focus">Come allenarlo <span aria-hidden="true">&#x25b7;</span></a>
       </div>
       <div class="fig"><svg viewBox="0 0 100 100" id="bigFig" aria-hidden="true"></svg><span class="tag" id="figTag"></span></div>
       <div class="side">
@@ -206,7 +224,7 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
         <div><div class="lab">Tempo per posa</div><div class="chips" id="times"></div>
           <div class="cust"><label for="customT">Personalizzato</label><input id="customT" type="number" min="5" max="7200" step="5" placeholder="sec"></div></div>
         <div><div class="lab">Numero di pose</div>
-          <div class="count"><div class="big" id="cntBig">20<small>pose</small></div><div class="step"><button id="cMinus" aria-label="Meno pose">−</button><button id="cPlus" aria-label="Più pose">+</button></div></div></div>
+          <div class="count"><div class="big" id="cntBig">20<small>pose</small></div><div class="step"><button id="cMinus" aria-label="Meno pose">&#x2212;</button><button id="cPlus" aria-label="Pi&#xf9; pose">+</button></div></div><div class="quick" id="cntQuick"></div></div>
         <div class="sw">
           <label><input type="checkbox" id="optShuffle" checked>Casuale</label>
           <label><input type="checkbox" id="optFlip">Specchia</label>
@@ -225,12 +243,12 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
   </section>
 
   <section class="card sec" id="path" aria-labelledby="pathH">
-    <div class="cardH"><div><h2 id="pathH">Il percorso</h2><p id="pathSub">Completa 5 sessioni di un livello per sbloccare il successivo. Una sessione vale se disegni almeno l'80% delle pose.</p></div><button class="free" id="free" aria-pressed="false">Modalità libera</button></div>
+    <div class="cardH"><div><h2 id="pathH">Il percorso</h2><p id="pathSub">Completa 5 sessioni di un livello per sbloccare il successivo. Una sessione vale se disegni almeno l'80% delle pose.</p></div><button class="free" id="free" aria-pressed="false">Modalit&#xe0; libera</button></div>
     <div class="map" id="map"><svg id="mapSvg" aria-hidden="true"></svg></div>
   </section>
 
   <section class="card sec" id="lib" aria-labelledby="libH">
-    <div class="cardH"><div><h2 id="libH">Libreria reference</h2><p>Una corsia per livello. Scegli la destinazione, poi aggiungi file o importa una board Pinterest. Puoi buttare tutto in “Da smistare” e spostare dopo con i numeri o trascinando.</p></div></div>
+    <div class="cardH"><div><h2 id="libH">Libreria reference</h2><p>Una corsia per livello. Scegli la destinazione, poi aggiungi file o importa una board Pinterest. Puoi buttare tutto in &#x201c;Da smistare&#x201d; e spostare dopo con i numeri o trascinando.</p></div></div>
     <div class="inbar">
       <label class="drop" id="drop" for="file">
         <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="12" fill="#111"/><path d="M20 12v16M12 20h16" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>
@@ -243,7 +261,9 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
     <div class="pinMsg" id="pinMsg" aria-live="polite"></div>
     <div class="boards" id="boards"></div>
     <div class="lanes" id="lanes"></div>
-    <div class="libFoot"><span>Su telefono: tocca un numero sotto l'immagine per spostarla. Le immagini restano solo in questo browser.</span><button class="lk" id="clear">Svuota “Da smistare”</button></div>
+    <div class="selbar" id="selbar" role="toolbar" aria-label="Immagini selezionate"><b id="selN">0</b><span class="lab2">Sposta in</span><div class="mv" id="selMv"></div><span class="sp"></span><button class="act danger" id="selDel">Elimina</button><button class="act" id="selNone">Annulla</button></div>
+    <div class="marq" id="marq"></div>
+    <div class="libFoot"><span>Selezione multipla: trascina un rettangolo con il mouse sullo sfondo delle colonne, oppure clicca le immagini (su telefono toccale). Poi spostale o eliminale dalla barra nera.</span><button class="lk" id="clear">Svuota &#x201c;Da smistare&#x201d;</button></div>
   </section>
 
   <div class="bento">
@@ -257,12 +277,12 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
       <div class="srcGrid" id="src"></div>
     </section>
   </div>
-  <footer>Livelli dal video “The ONLY 5 Levels of Figure Drawing You Need” del creatore di drawingtimer.com. Tempi consigliati, modificabili.</footer>
+  <footer>Livelli dal video &#x201c;The ONLY 5 Levels of Figure Drawing You Need&#x201d; del creatore di drawingtimer.com. Tempi consigliati, modificabili.</footer>
 </div>
 
 <div class="modal" id="gal" role="dialog" aria-modal="true" aria-labelledby="galH">
   <div class="mcard">
-    <div class="cardH"><div><h2 id="galH">Galleria</h2><p id="galSub">I tuoi disegni di questo livello. Fotografali o esportali e caricali qui per vedere i progressi.</p></div><button class="x2" id="galX" aria-label="Chiudi">×</button></div>
+    <div class="cardH"><div><h2 id="galH">Galleria</h2><p id="galSub">I tuoi disegni di questo livello. Fotografali o esportali e caricali qui per vedere i progressi.</p></div><button class="x2" id="galX" aria-label="Chiudi">&#xd7;</button></div>
     <label class="drop" for="galFile"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="12" fill="#111"/><path d="M20 12v16M12 20h16" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg><div><b>Carica i tuoi disegni</b><span>Trascina, incolla o scegli i file</span></div><input type="file" id="galFile" accept="image/*" multiple hidden></label>
     <div class="ggrid" id="ggrid"></div>
   </div>
@@ -273,11 +293,11 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
   <div class="stage" id="stage"></div>
   <div><div class="bar" id="bar"><i></i></div>
   <div class="ctl">
-    <button class="ib" id="sPrev" aria-label="Posa precedente">◀</button>
+    <button class="ib" id="sPrev" aria-label="Posa precedente">&#x25c0;</button>
     <button class="ib main" id="sPause">Pausa</button>
     <div class="clock" id="clock">0:00</div>
     <button class="ib" id="sAdd">+30s</button>
-    <button class="ib" id="sNext" aria-label="Posa successiva">▶</button>
+    <button class="ib" id="sNext" aria-label="Posa successiva">&#x25b6;</button>
   </div></div>
   <div class="done" id="done"><div><h2 id="doneH">Fatto.</h2><p id="doneTxt"></p><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="ib main" id="doneOk">Torna al percorso</button><button class="ib" id="doneGal">Carica i disegni in galleria</button></div></div></div>
 </div>
@@ -286,16 +306,16 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
 {
 const COL=['#d7f542','#ff5b2e','#3dd8ff','#a98bff','#ff4f9a'];
 const LV=[
- {t:'Pose dritte',s:'Fianchi dritti',d:'In piedi, frontali o di profilo, fianchi orizzontali. Impari la gesture e la costruzione del corpo.',g:'GESTURE',f:['Linea d\'azione in un solo tratto','Testa, cassa toracica e bacino come volumi semplici','Proporzioni: quante teste è alto?','Spalle e fianchi paralleli'],n:'Velocità <em>prima</em> della precisione',times:[30,60,120],def:60,cnt:20,q:['standing pose reference','standing pose side view reference','full body model reference drawing','gesture drawing reference photo']},
+ {t:'Pose dritte',s:'Fianchi dritti',d:'In piedi, frontali o di profilo, fianchi orizzontali. Impari la gesture e la costruzione del corpo.',g:'GESTURE',f:['Linea d\'azione in un solo tratto','Testa, cassa toracica e bacino come volumi semplici','Proporzioni: quante teste \u00e8 alto?','Spalle e fianchi paralleli'],n:'Velocit\u00e0 <em>prima</em> della precisione',times:[30,60,120],def:60,cnt:20,q:['standing pose reference','standing pose side view reference','full body model reference drawing','gesture drawing reference photo']},
  {t:'Pose statiche',s:'Fianchi inclinati',d:'Contrapposto, peso su una gamba, pose sedute. Il bacino si inclina e arrivano i primi scorci.',g:'WEIGHT',f:['Spalle e bacino inclinati in modo opposto','Gamba portante sotto il baricentro','Torsione tra cassa toracica e bacino','Primi scorci su braccia e cosce'],n:'Dove <em>cade</em> il peso?',times:[60,120,300],def:120,cnt:12,q:['contrapposto pose reference','weight shift pose reference','sitting pose reference','leaning pose reference']},
  {t:'Pose dinamiche',s:'Azione',d:'Salti, corsa, combattimento, sport. Serve l\'anatomia per capire cosa si stira e cosa si comprime.',g:'ACTION',f:['Lato teso contro lato compresso','Linea d\'azione esagerata','Muscoli che guidano il movimento','Equilibrio e direzione del gesto'],n:'Spingi l\'azione <em>oltre</em> la foto',times:[60,120,300],def:120,cnt:10,q:['dynamic pose reference','action pose reference photo','fighting pose reference','jumping pose reference']},
- {t:'Alto e basso',s:'Prospettiva',d:'Vista dall\'alto e dal basso. Prospettiva sul corpo, scorci più forti e sezioni trasversali.',g:'ANGLES',f:['Orizzonte e punto di vista','Sezioni trasversali sul torso','Sovrapposizione delle forme','Vicino grande, lontano piccolo'],n:'Cilindri, <em>non</em> contorni',times:[120,300,600],def:300,cnt:6,q:['high angle pose reference','low angle pose reference','birds eye view pose reference','worms eye view pose reference']},
+ {t:'Alto e basso',s:'Prospettiva',d:'Vista dall\'alto e dal basso. Prospettiva sul corpo, scorci pi\u00f9 forti e sezioni trasversali.',g:'ANGLES',f:['Orizzonte e punto di vista','Sezioni trasversali sul torso','Sovrapposizione delle forme','Vicino grande, lontano piccolo'],n:'Cilindri, <em>non</em> contorni',times:[120,300,600],def:300,cnt:6,q:['high angle pose reference','low angle pose reference','birds eye view pose reference','worms eye view pose reference']},
  {t:'Angoli estremi',s:'Scorcio estremo',d:'Grandangolo, fisheye, mani e piedi verso l\'obiettivo. Il livello da illustrazione e fumetto.',g:'EXTREME',f:['Scorcio esagerato e coraggioso','Distorsione grandangolo / fisheye','Sovrapposizioni nette','Costruzione 3D prima del dettaglio'],n:'Esagera, poi <em>esagera</em> ancora',times:[300,600,900],def:600,cnt:4,q:['extreme foreshortening pose reference','fisheye pose reference','wide angle pose reference','reaching towards camera pose reference']}
 ];
 const AD='https://www.adorkastock.com/',PM='https://posemy.art/',CO='https://www.cosmos.so/';
 const LA={s:'Timer online',t:'Line of Action',u:'https://line-of-action.com/'},SD={s:'Timer online',t:'SketchDaily (filtri angolo)',u:'https://www.sketchdaily.net/'},QP={s:'Timer online',t:'Quickposes',u:'https://quickposes.com/'};
 const PMA={s:'Anatomia 3D',t:'Posemaniacs',u:'https://www.posemaniacs.com/'},JS={s:'Anatomia 3D',t:'JustSketchMe',u:'https://justsketch.me/'};
-const MIX=[{s:'Cosmos',t:'Poses · @perxy (151)',u:CO+'perxy/poses'},{s:'Cosmos',t:'Pose reference · @mobero (56)',u:CO+'mobero/pose-reference'},{s:'Cosmos',t:'Figure references · @chairnoizes',u:CO+'chairnoizes/figure-references'}];
+const MIX=[{s:'Cosmos',t:'Poses \u00b7 @perxy (151)',u:CO+'perxy/poses'},{s:'Cosmos',t:'Pose reference \u00b7 @mobero (56)',u:CO+'mobero/pose-reference'},{s:'Cosmos',t:'Figure references \u00b7 @chairnoizes',u:CO+'chairnoizes/figure-references'}];
 const LIB=[
  [{s:'AdorkaStock',t:'In piedi',u:AD+'pose-category/position/standing/'},{s:'AdorkaStock',t:'Frontale',u:AD+'pose-category/angle/front/'},{s:'AdorkaStock',t:'Profilo',u:AD+'pose-category/angle/profile/'},{s:'Foto e video',t:'PoseSpace',u:'https://posespace.com/ArtReferencePoses.aspx'},{s:'Foto e video',t:'Croquis Cafe',u:'https://croquis.cafe/'},...MIX,LA,SD,QP],
  [{s:'AdorkaStock',t:'Seduti',u:AD+'pose-category/position/sitting/'},{s:'AdorkaStock',t:'In ginocchio',u:AD+'pose-category/position/kneeling/'},{s:'AdorkaStock',t:'Sdraiati',u:AD+'pose-category/position/lying/'},{s:'AdorkaStock',t:'Vista 3/4',u:AD+'pose-category/angle/3-4/'},{s:'Foto e video',t:'Croquis Cafe',u:'https://croquis.cafe/'},...MIX,LA,SD],
@@ -337,20 +357,21 @@ for(const l of store.get('links',[]))if(mem[l.lv])mem[l.lv].push({id:tmpId--,rem
 function saveLinks(){const out=[];for(const k of Object.keys(mem))for(const it of mem[k])if(it.remote)out.push({lv:+k,src:it.url});store.set('links',out)}
 function hasSrc(src){return Object.values(mem).some(a=>a.some(it=>it.url===src))}
 async function importBoard(u,k){
- const msg=$('pinMsg');msg.className='pinMsg';msg.textContent='Leggo la board…';$('pinGo').disabled=true;
+ const msg=$('pinMsg');msg.className='pinMsg';msg.textContent='Leggo la board\u2026';$('pinGo').disabled=true;
  try{
   const r=await fetch(API+'?url='+encodeURIComponent(u));const j=await r.json().catch(()=>({}));
   if(!r.ok)throw new Error(j.error||'Errore '+r.status);
   let n=0;for(const src of j.images||[]){if(!hasSrc(src)){mem[k].push({id:tmpId--,remote:true,url:src});n++}}
   saveLinks();const b=boards.find(x=>x.u===u&&x.lv===k);if(b)b.n=(j.images||[]).length;else boards.push({u,lv:k,name:j.board||u,n:(j.images||[]).length});store.set('boards',boards);
-  msg.textContent=`${n} nuove reference da “${j.board||'board'}” in ${laneName(k)}${(j.images||[]).length-n?' ('+((j.images||[]).length-n)+' già presenti)':''}.`;renderLib();
+  msg.textContent=`${n} nuove reference da \u201c${j.board||'board'}\u201d in ${laneName(k)}${(j.images||[]).length-n?' ('+((j.images||[]).length-n)+' gi\u00e0 presenti)':''}.`;renderLib();
  }catch(e){msg.className='pinMsg err';msg.textContent=location.hostname.endsWith('claude.ai')||location.protocol==='file:'||/claudeusercontent|claude\.site/.test(location.hostname)?'L\'import da Pinterest funziona solo nella versione pubblicata su Netlify.':'Non riesco a leggere la board: '+e.message}
  finally{$('pinGo').disabled=false}
 }
-function renderBoards(){$('boards').innerHTML=boards.map((b,i)=>`<span class="board"><i style="background:${b.lv<5?COL[b.lv]:'#111;color:#fff'}">${b.lv<5?b.lv+1:'IN'}</i>${esc(b.name)} · ${b.n}<button data-sync="${i}" aria-label="Aggiorna board" title="Aggiorna">↻</button><button data-unb="${i}" aria-label="Rimuovi board" title="Rimuovi dalla lista">×</button></span>`).join('')}
+function renderBoards(){$('boards').innerHTML=boards.map((b,i)=>`<span class="board"><i style="background:${b.lv<5?COL[b.lv]:'#111;color:#fff'}">${b.lv<5?b.lv+1:'IN'}</i>${esc(b.name)} \u00b7 ${b.n}<button data-sync="${i}" aria-label="Aggiorna board" title="Aggiorna">\u21bb</button><button data-unb="${i}" aria-label="Rimuovi board" title="Rimuovi dalla lista">\u00d7</button></span>`).join('')}
 function find(id){for(const k of Object.keys(mem).map(Number)){const i=mem[k].findIndex(x=>x.id===id);if(i>-1)return[k,i]}return null}
-function move(id,to){const f=find(id);if(!f||f[0]===to)return;const it=mem[f[0]].splice(f[1],1)[0];mem[to].push(it);if(it.remote)saveLinks();else if(db&&it.dbid!=null){try{os('readwrite').put({id:it.dbid,lv:to,blob:it.blob})}catch(e){}}renderLib()}
-function del(id){const f=find(id);if(!f)return;const it=mem[f[0]].splice(f[1],1)[0];if(it.remote)saveLinks();else{if(db&&it.dbid!=null){try{os('readwrite').delete(it.dbid)}catch(e){}}URL.revokeObjectURL(it.url)}renderLib();if(galK>=0)renderGal()}
+function move(id,to,quiet){const f=find(id);if(!f||f[0]===to)return;const it=mem[f[0]].splice(f[1],1)[0];mem[to].push(it);if(it.remote)saveLinks();else if(db&&it.dbid!=null){try{os('readwrite').put({id:it.dbid,lv:to,blob:it.blob})}catch(e){}}if(!quiet)renderLib()}
+function del(id,quiet){const f=find(id);if(!f)return;selIds.delete(id);const it=mem[f[0]].splice(f[1],1)[0];if(it.remote)saveLinks();else{if(db&&it.dbid!=null){try{os('readwrite').delete(it.dbid)}catch(e){}}URL.revokeObjectURL(it.url)}if(quiet)return;renderLib();if(galK>=0)renderGal()}
+let selIds=new Set();
 
 // ---- render ----
 function lvSet(){const s=set[cur]||{};return{t:s.t??LV[cur].def,n:s.n??LV[cur].cnt}}
@@ -361,26 +382,27 @@ function render(){
  const lk=!unlocked(cur);$('panel').classList.toggle('locked',lk);$('lockMsg').textContent=lk?'Bloccato: completa '+NEED+' sessioni del livello '+cur+' ('+prog[cur-1]+'/'+NEED+')':'';$('start').setAttribute('aria-disabled',lk);
  $('lvCode').textContent=pad(cur+1)+' / 05';$('lvTitle').textContent=l.t;$('lvDesc').textContent=l.d;$('ghost').textContent=l.g;
  $('bigFig').innerHTML=figSvg(cur,3.2);$('figTag').textContent=l.s;
- $('sideCode').textContent='LV-'+pad(cur+1);$('sideRange').textContent=lab(l.times[0])+' → '+lab(l.times[l.times.length-1]);
+ $('sideCode').textContent='LV-'+pad(cur+1);$('sideRange').textContent=lab(l.times[0])+' \u2192 '+lab(l.times[l.times.length-1]);
  $('times').innerHTML=l.times.map(t=>`<button class="chip" data-t="${t}" aria-pressed="${s.t===t}">${lab(t)}</button>`).join('');
  $('customT').value=l.times.includes(s.t)?'':s.t;
- $('cntBig').innerHTML=s.n+'<small>pose</small>';
+ $('cntBig').innerHTML=(s.n?s.n:'Tutte')+'<small>'+(s.n?'pose':'('+mem[cur].length+')')+'</small>';
+ $('cntQuick').innerHTML=[5,10,20,30,50,0].map(n=>`<button class="chip" data-n="${n}" aria-pressed="${s.n===n}">${n||'Tutte'}</button>`).join('');
  $('lvTabs').innerHTML=LV.map((x,i)=>`<button class="lvTab" data-i="${i}" aria-pressed="${i===cur}"><i style="background:${COL[i]}">${i+1}</i><span>${x.t}</span>${unlocked(i)?'':'<svg class="lk2" viewBox="0 0 24 24" width="14" height="14" aria-label="bloccato"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>'}</button>`).join('');
- $('fSub').textContent='Livello '+(cur+1)+' · '+l.s;
+ $('fSub').textContent='Livello '+(cur+1)+' \u00b7 '+l.s;
  $('lvFocus').innerHTML=l.f.map(x=>`<li>${x}</li>`).join('');$('lvNote').innerHTML=l.n;
  const pins=l.q.map(q=>({s:'Pinterest',t:q,u:'https://www.pinterest.com/search/pins/?q='+encodeURIComponent(q)}));
  const groups={};for(const r of [...pins,...LIB[cur]])(groups[r.s]=groups[r.s]||[]).push(r);
- $('src').innerHTML=Object.keys(groups).map(g=>`<div class="grp"><h3>${g}</h3><div class="links">${groups[g].map(r=>`<a href="${r.u}" target="_blank" rel="noopener">${r.t}<span aria-hidden="true">↗</span></a>`).join('')}</div></div>`).join('');
+ $('src').innerHTML=Object.keys(groups).map(g=>`<div class="grp"><h3>${g}</h3><div class="links">${groups[g].map(r=>`<a href="${r.u}" target="_blank" rel="noopener">${r.t}<span aria-hidden="true">\u2197</span></a>`).join('')}</div></div>`).join('');
  renderLib();renderMap();
 }
 function renderLib(){
  const s=lvSet(),n=mem[cur].length;
- $('avail').textContent=n;$('dur').textContent=`${s.n} × ${lab(s.t)} ≈ ${Math.max(1,Math.round(s.n*s.t/60))} min`;
+ const nn=s.n||n||LV[cur].cnt;$('avail').textContent=n;$('dur').textContent=`${nn} \u00d7 ${lab(s.t)} \u2248 ${Math.max(1,Math.round(nn*s.t/60))} min`;if(!s.n)$('cntBig').innerHTML='Tutte<small>('+n+')</small>';
  $('mini').innerHTML=mem[cur].slice(0,3).map(it=>`<div class="t"><img src="${esc(it.url)}" alt=""></div>`).join('')+(n>3?`<div class="t">+${n-3}</div>`:'');
  $('dest').innerHTML=LANES.map(k=>`<button class="chip" data-d="${k}" aria-pressed="${k===dest}" ${k<5?`style="--lv:${COL[k]}"`:''} title="${laneName(k)}">${k===INBOX?'Inbox':k+1}</button>`).join('');
  $('destTxt').textContent='Finiranno in: '+laneName(dest);
- $('lanes').innerHTML=LANES.map(k=>{const a=mem[k];return `<div class="lane${k===INBOX?' inbox':''}" data-lane="${k}"><div class="laneH" ${k<5?`style="background:${COL[k]}"`:''}><b>${k<5?(k+1)+' · ':''}${laneName(k)}</b><span>${a.length}</span></div><div class="laneB">${a.length?a.map(it=>`<div class="th" draggable="true" data-id="${it.id}"><img src="${esc(it.url)}" alt=""><div class="ops">${[0,1,2,3,4].filter(j=>j!==k).map(j=>`<button data-mv="${j}" style="background:${COL[j]}" aria-label="Sposta in livello ${j+1}">${j+1}</button>`).join('')}<button class="x" data-rm="1" aria-label="Elimina">×</button></div></div>`).join(''):`<div class="empty">${k===INBOX?'Le immagini senza livello arrivano qui':'Trascina qui'}</div>`}</div></div>`}).join('');
- $('clear').hidden=!mem[INBOX].length;renderBoards();
+ $('lanes').innerHTML=LANES.map(k=>{const a=mem[k];return `<div class="lane${k===INBOX?' inbox':''}" data-lane="${k}"><div class="laneH" ${k<5?`style="background:${COL[k]}"`:''}><b>${k<5?(k+1)+' \u00b7 ':''}${laneName(k)}</b>${a.length?`<button class="all" data-all="${k}">Tutte</button>`:''}<span>${a.length}</span></div><div class="laneB">${a.length?a.map(it=>`<div class="th${selIds.has(it.id)?' sel':''}" draggable="true" data-id="${it.id}" tabindex="0"><img src="${esc(it.url)}" alt=""><div class="ops">${[0,1,2,3,4].filter(j=>j!==k).map(j=>`<button data-mv="${j}" style="background:${COL[j]}" aria-label="Sposta in livello ${j+1}">${j+1}</button>`).join('')}<button class="x" data-rm="1" aria-label="Elimina">\u00d7</button></div></div>`).join(''):`<div class="empty">${k===INBOX?'Le immagini senza livello arrivano qui':'Trascina qui'}</div>`}</div></div>`}).join('');
+ $('clear').hidden=!mem[INBOX].length;renderBoards();renderSel();
 }
 function renderStats(){$('stPoses').textContent=stats.poses;$('stSes').textContent=stats.ses;$('stMin').textContent=Math.round(stats.sec/60)}
 function goLv(i){cur=(i+5)%5;save();render()}
@@ -390,8 +412,9 @@ $('prevLv').addEventListener('click',()=>goLv(cur-1));$('nextLv').addEventListen
 $('lvTabs').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b)goLv(+b.dataset.i)});
 $('times').addEventListener('click',e=>{const b=e.target.closest('[data-t]');if(!b)return;set[cur]={...lvSet(),t:+b.dataset.t};save();render()});
 $('customT').addEventListener('change',e=>{if(!e.target.value)return;set[cur]={...lvSet(),t:Math.min(7200,Math.max(5,Math.round(+e.target.value)))};save();render()});
-$('cMinus').addEventListener('click',()=>{set[cur]={...lvSet(),n:Math.max(1,lvSet().n-1)};save();render()});
-$('cPlus').addEventListener('click',()=>{set[cur]={...lvSet(),n:Math.min(200,lvSet().n+1)};save();render()});
+$('cMinus').addEventListener('click',()=>{const c=lvSet().n||mem[cur].length||LV[cur].cnt;set[cur]={...lvSet(),n:Math.max(1,c-1)};save();render()});
+$('cntQuick').addEventListener('click',e=>{const b=e.target.closest('[data-n]');if(!b)return;set[cur]={...lvSet(),n:+b.dataset.n};save();render()});
+$('cPlus').addEventListener('click',()=>{const c=lvSet().n||mem[cur].length||LV[cur].cnt;set[cur]={...lvSet(),n:Math.min(300,c+1)};save();render()});
 for(const k of ['Shuffle','Flip','Gray','Sound']){const el=$('opt'+k),v=store.get('opt'+k,null);if(v!==null)el.checked=v;el.addEventListener('change',()=>store.set('opt'+k,el.checked))}
 $('dest').addEventListener('click',e=>{const b=e.target.closest('[data-d]');if(!b)return;dest=+b.dataset.d;store.set('dest',dest);renderLib()});
 function addFiles(files,k){let n=0;for(const f of files){if(f&&f.type&&f.type.startsWith('image/')){addBlob(k,f);n++}}if(n)renderLib();return n}
@@ -402,15 +425,32 @@ dz.addEventListener('dragleave',()=>dz.classList.remove('over'));
 dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('over');if(!addFiles(e.dataTransfer.files,dest))$('destTxt').textContent='Era un link: copia o salva l\'immagine e riprova'});
 document.addEventListener('paste',e=>{if($('ses').classList.contains('on'))return;const fs=[...(e.clipboardData?.items||[])].filter(i=>i.kind==='file').map(i=>i.getAsFile());if(!fs.length){const t=e.clipboardData?.getData('text')||'';if(/pinterest\.|pin\.it/.test(t)&&document.activeElement!==$('pinUrl')){e.preventDefault();$('pinUrl').value=t.trim();$('pinUrl').focus()}return}e.preventDefault();if(galK>=0){for(const f of fs)if(f.type.startsWith('image/'))addBlob(10+galK,f);renderGal()}else addFiles(fs,dest)});
 const lanes=$('lanes');
-lanes.addEventListener('click',e=>{const th=e.target.closest('.th');if(!th)return;const id=+th.dataset.id;const mv=e.target.closest('[data-mv]');if(mv)move(id,+mv.dataset.mv);else if(e.target.closest('[data-rm]'))del(id)});
-lanes.addEventListener('dragstart',e=>{const th=e.target.closest('.th');if(th){e.dataTransfer.setData('text/x-ref',th.dataset.id);e.dataTransfer.effectAllowed='move'}});
+lanes.addEventListener('click',e=>{if(justMarq){justMarq=false;return}const all=e.target.closest('[data-all]');if(all){const k=+all.dataset.all,ids=mem[k].map(x=>x.id),every=ids.every(i=>selIds.has(i));for(const i of ids)every?selIds.delete(i):selIds.add(i);renderLib();return}
+ const th=e.target.closest('.th');if(!th)return;const id=+th.dataset.id;const mv=e.target.closest('[data-mv]');if(mv){if(selIds.has(id)&&selIds.size>1)moveSel(+mv.dataset.mv);else move(id,+mv.dataset.mv);return}if(e.target.closest('[data-rm]')){del(id);return}
+ selIds.has(id)?selIds.delete(id):selIds.add(id);th.classList.toggle('sel');renderSel()});
+lanes.addEventListener('keydown',e=>{const th=e.target.closest('.th');if(th&&(e.key===' '||e.key==='Enter')){e.preventDefault();th.click()}});
+function renderSel(){for(const id of [...selIds])if(!find(id))selIds.delete(id);const n=selIds.size;$('selbar').classList.toggle('on',n>0);$('selN').textContent=n+(n===1?' selezionata':' selezionate');
+ $('selMv').innerHTML=LANES.map(k=>`<button data-to="${k}" style="background:${k<5?COL[k]:'#fff'}" aria-label="Sposta in ${laneName(k)}">${k<5?k+1:'Inbox'}</button>`).join('')}
+function moveSel(k){for(const id of [...selIds])move(id,k,true);selIds.clear();renderLib()}
+$('selMv').addEventListener('click',e=>{const b=e.target.closest('[data-to]');if(b)moveSel(+b.dataset.to)});
+let delArm=false;$('selDel').addEventListener('click',()=>{if(!delArm){delArm=true;$('selDel').textContent='Conferma: elimina '+selIds.size;setTimeout(()=>{delArm=false;$('selDel').textContent='Elimina'},3000);return}delArm=false;$('selDel').textContent='Elimina';for(const id of [...selIds])del(id,true);selIds.clear();renderLib();if(galK>=0)renderGal()});
+$('selNone').addEventListener('click',()=>{selIds.clear();renderLib()});
+document.addEventListener('keydown',e=>{if(!selIds.size||galK>=0||$('ses').classList.contains('on')||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;if(e.key==='Escape'){selIds.clear();renderLib()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();$('selDel').click()}});
+// rubber-band selection (mouse)
+let mq=null,justMarq=false;const marq=$('marq');
+lanes.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||e.target.closest('.th,button'))return;mq={x:e.clientX,y:e.clientY,add:e.shiftKey||e.ctrlKey||e.metaKey,base:new Set(selIds),moved:false};e.preventDefault()});
+window.addEventListener('pointermove',e=>{if(!mq)return;const x1=Math.min(mq.x,e.clientX),y1=Math.min(mq.y,e.clientY),x2=Math.max(mq.x,e.clientX),y2=Math.max(mq.y,e.clientY);if(!mq.moved&&x2-x1<5&&y2-y1<5)return;mq.moved=true;
+ Object.assign(marq.style,{display:'block',left:x1+'px',top:y1+'px',width:(x2-x1)+'px',height:(y2-y1)+'px'});
+ for(const th of lanes.querySelectorAll('.th')){const r=th.getBoundingClientRect(),hit=r.left<x2&&r.right>x1&&r.top<y2&&r.bottom>y1,id=+th.dataset.id,on=hit||(mq.add&&mq.base.has(id));th.classList.toggle('sel',on)}});
+window.addEventListener('pointerup',()=>{if(!mq)return;marq.style.display='none';if(mq.moved){selIds=new Set([...lanes.querySelectorAll('.th.sel')].map(t=>+t.dataset.id));justMarq=true;setTimeout(()=>justMarq=false,0);renderSel()}else if(!mq.add){selIds.clear();renderLib()}mq=null});
+lanes.addEventListener('dragstart',e=>{const th=e.target.closest('.th');if(th){e.dataTransfer.setData('text/x-ref',selIds.has(+th.dataset.id)?[...selIds].join(','):th.dataset.id);e.dataTransfer.effectAllowed='move'}});
 lanes.addEventListener('dragover',e=>{const ln=e.target.closest('.lane');if(!ln)return;e.preventDefault();for(const x of lanes.querySelectorAll('.lane.over'))if(x!==ln)x.classList.remove('over');ln.classList.add('over')});
 lanes.addEventListener('dragleave',e=>{const ln=e.target.closest('.lane');if(ln&&!ln.contains(e.relatedTarget))ln.classList.remove('over')});
-lanes.addEventListener('drop',e=>{const ln=e.target.closest('.lane');if(!ln)return;e.preventDefault();ln.classList.remove('over');const k=+ln.dataset.lane,id=e.dataTransfer.getData('text/x-ref');if(id)move(+id,k);else addFiles(e.dataTransfer.files,k)});
+lanes.addEventListener('drop',e=>{const ln=e.target.closest('.lane');if(!ln)return;e.preventDefault();ln.classList.remove('over');const k=+ln.dataset.lane,id=e.dataTransfer.getData('text/x-ref');if(id){const ids=id.split(',').map(Number);if(ids.length>1){for(const i of ids)move(i,k,true);selIds.clear();renderLib()}else move(ids[0],k)}else addFiles(e.dataTransfer.files,k)});
 $('pinGo').addEventListener('click',()=>{const u=$('pinUrl').value.trim();if(!u){$('pinMsg').className='pinMsg err';$('pinMsg').textContent='Incolla prima il link della board.';return}importBoard(u,dest)});
 $('pinUrl').addEventListener('keydown',e=>{if(e.key==='Enter')$('pinGo').click()});
 $('boards').addEventListener('click',e=>{const s=e.target.closest('[data-sync]'),x=e.target.closest('[data-unb]');if(s){const b=boards[+s.dataset.sync];importBoard(b.u,b.lv)}if(x){boards.splice(+x.dataset.unb,1);store.set('boards',boards);renderBoards()}});
-let arm=false;$('clear').addEventListener('click',()=>{if(!arm){arm=true;$('clear').textContent='Tocca di nuovo per confermare';setTimeout(()=>{arm=false;$('clear').textContent='Svuota “Da smistare”'},3000);return}arm=false;for(const it of mem[INBOX].slice())del(it.id);$('clear').textContent='Svuota “Da smistare”'});
+let arm=false;$('clear').addEventListener('click',()=>{if(!arm){arm=true;$('clear').textContent='Tocca di nuovo per confermare';setTimeout(()=>{arm=false;$('clear').textContent='Svuota \u201cDa smistare\u201d'},3000);return}arm=false;for(const it of mem[INBOX].slice())del(it.id);$('clear').textContent='Svuota \u201cDa smistare\u201d'});
 
 // ---- session ----
 let S=null,ac=null;
@@ -419,7 +459,7 @@ function start(){
  if(!unlocked(cur)){$('lockMsg').animate&&$('lockMsg').animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'none'}],{duration:240});return}
  const s=lvSet(),imgs=mem[cur].slice();
  if($('optShuffle').checked)for(let i=imgs.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[imgs[i],imgs[j]]=[imgs[j],imgs[i]]}
- const order=[];for(let i=0;i<s.n;i++)order.push(imgs.length?imgs[i%imgs.length]:null);
+ const N=s.n||imgs.length||LV[cur].cnt;const order=[];for(let i=0;i<N;i++)order.push(imgs.length?imgs[i%imgs.length]:null);
  try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume&&ac.resume()}catch(e){ac=null}
  S={order,i:0,dur:s.t,left:s.t,paused:false,last:performance.now(),drawn:0,sec:0,flips:order.map(()=>$('optFlip').checked&&Math.random()<.5),beeped:-1};
  $('sLv').textContent='LV-'+pad(cur+1)+' '+LV[cur].t;$('done').classList.remove('on');$('ses').classList.add('on');
@@ -444,7 +484,7 @@ function finish(){
  const ok=S.drawn>=Math.ceil(S.order.length*.8),was=cur<4&&unlocked(cur+1);let msg;
  if(ok){prog[cur]++;store.set('prog',prog)}
  if(!ok)msg=`${S.drawn} pose su ${S.order.length}: per contare servono almeno ${Math.ceil(S.order.length*.8)} pose. Riprova!`;
- else if(cur<4&&!was&&unlocked(cur+1))msg=`Sessione ${prog[cur]} completata. Livello ${cur+2} · ${LV[cur+1].t} sbloccato!`;
+ else if(cur<4&&!was&&unlocked(cur+1))msg=`Sessione ${prog[cur]} completata. Livello ${cur+2} \u00b7 ${LV[cur+1].t} sbloccato!`;
  else if(cur<4&&!unlocked(cur+1))msg=`Sessione completata: ${prog[cur]}/${NEED} per sbloccare il livello ${cur+2}.`;
  else msg=`Sessione completata (${prog[cur]} in totale su questo livello). ${S.drawn} pose in ${fmt(S.sec)}.`;
  $('doneH').textContent=ok?(cur<4&&!was&&unlocked(cur+1)?'Sbloccato!':'Fatto.'):'Quasi.';
@@ -487,8 +527,8 @@ $('free').setAttribute('aria-pressed',free);
 $('free').addEventListener('click',()=>{free=!free;store.set('free',free);$('free').setAttribute('aria-pressed',free);render()});
 // ---- gallery ----
 let galK=-1;
-function openGal(k){galK=k;$('galH').textContent='Galleria · Livello '+(k+1);$('gal').classList.add('on');renderGal()}
-function renderGal(){const a=mem[10+galK];$('ggrid').innerHTML=a.length?a.map(it=>`<div class="th" data-id="${it.id}"><img src="${esc(it.url)}" alt="Disegno"><div class="ops"><button class="x" data-rm="1" aria-label="Elimina">×</button></div></div>`).join(''):'<div class="empty">Ancora nessun disegno. Dopo una sessione, fotografa i tuoi fogli e caricali qui.</div>'}
+function openGal(k){galK=k;$('galH').textContent='Galleria \u00b7 Livello '+(k+1);$('gal').classList.add('on');renderGal()}
+function renderGal(){const a=mem[10+galK];$('ggrid').innerHTML=a.length?a.map(it=>`<div class="th" data-id="${it.id}"><img src="${esc(it.url)}" alt="Disegno"><div class="ops"><button class="x" data-rm="1" aria-label="Elimina">\u00d7</button></div></div>`).join(''):'<div class="empty">Ancora nessun disegno. Dopo una sessione, fotografa i tuoi fogli e caricali qui.</div>'}
 function closeGal(){galK=-1;$('gal').classList.remove('on')}
 $('galX').addEventListener('click',closeGal);
 $('gal').addEventListener('click',e=>{if(e.target===$('gal'))closeGal()});
