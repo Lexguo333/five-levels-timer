@@ -1,5 +1,5 @@
 // Legge una board Pinterest pubblica tramite il suo feed RSS e restituisce le URL delle immagini.
-// Accetta solo indirizzi Pinterest, così non diventa un proxy aperto.
+// Accetta solo indirizzi Pinterest, cos\u00ec non diventa un proxy aperto.
 const HOST = /(^|\.)pinterest\.[a-z.]{2,8}$/i;
 
 function json(status, data) {
@@ -21,8 +21,11 @@ async function resolve(raw) {
   }
   if (!HOST.test(u.hostname)) return null;
   const parts = u.pathname.split('/').filter(Boolean);
-  if (parts[0] === 'pin' || parts[0] === 'search' || parts[0] === 'ideas') return { error: 'Questo è un pin o una ricerca: incolla il link di una board (pinterest.com/utente/nome-board).' };
-  if (parts.length >= 2) return { rss: `https://www.pinterest.com/${parts[0]}/${parts[1].replace(/\.rss$/, '')}.rss`, name: decodeURIComponent(parts[1]).replace(/-/g, ' ') };
+  if (parts[0] === 'pin' || parts[0] === 'search' || parts[0] === 'ideas') return { error: 'Questo \u00e8 un pin o una ricerca: incolla il link di una board (pinterest.com/utente/nome-board).' };
+  if (parts.length >= 2) {
+    const user = parts[0], board = parts[1].replace(/\.rss$/, '');
+    return { user, board, rss: `https://www.pinterest.com/${user}/${board}.rss`, name: decodeURIComponent(board).replace(/-/g, ' ') };
+  }
   if (parts.length === 1) return { rss: `https://www.pinterest.com/${parts[0]}/feed.rss`, name: parts[0] };
   return null;
 }
@@ -35,26 +38,49 @@ exports.handler = async (event) => {
   if (!target) return json(400, { error: 'Accetto solo link di board Pinterest.' });
   if (target.error) return json(400, { error: target.error });
 
-  let xml;
-  try {
-    const r = await fetch(target.rss, { headers: { 'user-agent': 'Mozilla/5.0 (FiveLevelsTimer)', accept: 'application/rss+xml,text/xml,*/*' } });
-    if (r.status === 404) return json(404, { error: 'Board non trovata: controlla che sia pubblica e che il link sia giusto.' });
-    if (!r.ok) return json(502, { error: 'Pinterest ha risposto ' + r.status + '. Riprova tra poco.' });
-    xml = await r.text();
-  } catch {
-    return json(502, { error: 'Pinterest non risponde. Riprova tra poco.' });
-  }
-
-  const title = (xml.match(/<title>(?:<!\[CDATA\[)?([^<\]]+)/) || [])[1];
   const seen = new Set();
   const images = [];
-  for (const m of xml.matchAll(/https:\/\/i\.pinimg\.com\/[A-Za-z0-9_\-\/.]+?\.(?:jpe?g|png|webp|gif)/g)) {
-    const big = m[0].replace(/i\.pinimg\.com\/\d+x(\d+)?\//, 'i.pinimg.com/736x/');
+  let title = '';
+  const add = (url) => {
+    if (!url || !/^https:\/\/i\.pinimg\.com\//.test(url)) return;
+    const big = url.replace(/i\.pinimg\.com\/\d+x(\d+)?\//, 'i.pinimg.com/736x/');
     const key = big.split('/').pop();
-    if (seen.has(key)) continue;
+    if (seen.has(key)) return;
     seen.add(key);
     images.push(big);
+  };
+  const UA = { 'user-agent': 'Mozilla/5.0 (FiveLevelsTimer)' };
+
+  // 1) widget delle board: fino a ~50 pin
+  if (target.board) {
+    try {
+      const r = await fetch(`https://widgets.pinterest.com/v3/pidgets/boards/${encodeURIComponent(target.user)}/${encodeURIComponent(target.board)}/pins/`, { headers: { ...UA, accept: 'application/json' } });
+      if (r.ok) {
+        const j = await r.json();
+        const d = (j && j.data) || {};
+        title = (d.board && d.board.name) || '';
+        for (const pin of d.pins || []) {
+          const im = pin.images || {};
+          add((im['736x'] || im['564x'] || im['474x'] || im['237x'] || {}).url);
+        }
+      }
+    } catch { /* passo al feed RSS */ }
   }
-  if (!images.length) return json(404, { error: 'Nessuna immagine trovata: la board è vuota o non è pubblica.' });
-  return json(200, { board: (title || target.name).trim(), images });
+
+  // 2) feed RSS: ultimi ~25 pin, utile anche per i profili
+  let rssStatus = 0;
+  try {
+    const r = await fetch(target.rss, { headers: { ...UA, accept: 'application/rss+xml,text/xml,*/*' } });
+    rssStatus = r.status;
+    if (r.ok) {
+      const xml = await r.text();
+      if (!title) title = (xml.match(/<title>(?:<!\[CDATA\[)?([^<\]]+)/) || [])[1] || '';
+      for (const m of xml.matchAll(/https:\/\/i\.pinimg\.com\/[A-Za-z0-9_\-\/.]+?\.(?:jpe?g|png|webp|gif)/g)) add(m[0]);
+    }
+  } catch { /* gestito sotto */ }
+
+  if (!images.length && rssStatus === 404) return json(404, { error: 'Board non trovata: controlla che sia pubblica e che il link sia giusto.' });
+  if (!images.length && rssStatus && rssStatus !== 200) return json(502, { error: 'Pinterest ha risposto ' + rssStatus + '. Riprova tra poco.' });
+  if (!images.length) return json(404, { error: 'Nessuna immagine trovata: la board \u00e8 vuota o non \u00e8 pubblica.' });
+  return json(200, { board: (title || target.name).trim(), images, count: images.length });
 };
