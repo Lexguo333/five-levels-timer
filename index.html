@@ -289,7 +289,7 @@ footer{color:var(--mute);font-size:13px;padding:22px 0 30px}
 </div>
 
 <div id="ses" role="dialog" aria-modal="true" aria-label="Sessione di disegno">
-  <div class="sTop"><div class="meta"><i id="sLv"></i><span>posa <b id="sIdx"></b></span></div><button class="ib stop" id="sStop">Termina</button></div>
+  <div class="sTop"><div class="meta"><i id="sLv"></i><span>posa <b id="sIdx"></b></span></div><div style="display:flex;gap:8px"><button class="ib" id="sPip" title="Finestra sempre in primo piano (tasto P)">Mini finestra</button><button class="ib stop" id="sStop">Termina</button></div></div>
   <div class="stage" id="stage"></div>
   <div><div class="bar" id="bar"><i></i></div>
   <div class="ctl">
@@ -464,18 +464,17 @@ function start(){
  S={order,i:0,dur:s.t,left:s.t,paused:false,last:performance.now(),drawn:0,sec:0,flips:order.map(()=>$('optFlip').checked&&Math.random()<.5),beeped:-1};
  $('sLv').textContent='LV-'+pad(cur+1)+' '+LV[cur].t;$('done').classList.remove('on');$('ses').classList.add('on');
  try{$('ses').requestFullscreen&&$('ses').requestFullscreen().catch(()=>{})}catch(e){}
- show();requestAnimationFrame(tick);
+ show();runTicker();
 }
 function show(){
  const it=S.order[S.i];S.left=S.dur;S.beeped=-1;$('sIdx').textContent=(S.i+1)+' / '+S.order.length;
  $('stage').innerHTML=it?`<img src="${esc(it.url)}" alt="Reference" class="${S.flips[S.i]?'flip ':''}${$('optGray').checked?'gray':''}">`:`<div class="blank"><h2>${LV[cur].t}</h2><p>Nessuna reference in questo livello. Disegna a memoria o con Pinterest in un'altra finestra.</p><p style="color:#f1f0ea">Focus: ${LV[cur].f[S.i%LV[cur].f.length]}</p></div>`;
- paint();
+ paint();pipShow();
 }
-function paint(){const w=S.left<=Math.min(10,S.dur*.15);$('clock').textContent=fmt(S.left);$('clock').classList.toggle('warn',w);$('bar').classList.toggle('warn',w);$('bar').firstElementChild.style.width=(100*(1-S.left/S.dur))+'%';$('sPause').textContent=S.paused?'Riprendi':'Pausa'}
+function paint(){const w=S.left<=Math.min(10,S.dur*.15);$('clock').textContent=fmt(S.left);$('clock').classList.toggle('warn',w);$('bar').classList.toggle('warn',w);$('bar').firstElementChild.style.width=(100*(1-S.left/S.dur))+'%';$('sPause').textContent=S.paused?'Riprendi':'Pausa';pipPaint()}
 function tick(now){
  if(!S)return;const dt=(now-S.last)/1000;S.last=now;
  if(!S.paused&&!$('done').classList.contains('on')){S.left-=dt;S.sec+=dt;const c=Math.ceil(S.left);if(c<=3&&c>0&&c!==S.beeped){S.beeped=c;beep(660,.12)}if(S.left<=0){beep(990,.35);S.drawn++;next(true);if(!S)return}paint()}
- requestAnimationFrame(tick);
 }
 function next(auto){if(!auto&&S.left<S.dur-5)S.drawn++;if(S.i>=S.order.length-1){finish();return}S.i++;show()}
 function prev(){if(S.i>0){S.i--;show()}}
@@ -489,9 +488,72 @@ function finish(){
  else msg=`Sessione completata (${prog[cur]} in totale su questo livello). ${S.drawn} pose in ${fmt(S.sec)}.`;
  $('doneH').textContent=ok?(cur<4&&!was&&unlocked(cur+1)?'Sbloccato!':'Fatto.'):'Quasi.';
  $('doneTxt').textContent=msg;render();
- $('done').classList.add('on');S.paused=true;
+ $('done').classList.add('on');S.paused=true;pipShow();
 }
-function close(){S=null;$('ses').classList.remove('on');try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
+function close(){S=null;clearInterval(ticker);closePip();$('ses').classList.remove('on');try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
+// ---- mini finestra (Picture-in-Picture) ----
+let ticker=null,pip=null,pv=null;const imgCache={};
+function runTicker(){clearInterval(ticker);if(S)S.last=performance.now();const w=pip||window;ticker=w.setInterval(()=>tick(performance.now()),200)}
+const PIPCSS=`*{box-sizing:border-box}html,body{margin:0;height:100%;background:#0e0e10;color:#f1f0ea;font:14px Outfit,system-ui,sans-serif;overflow:hidden}
+.w{display:grid;grid-template-rows:minmax(0,1fr) auto auto;height:100%}
+.im{display:flex;align-items:center;justify-content:center;padding:8px;min-height:0}
+.im img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.im p{color:#a9abb3;text-align:center;padding:0 16px}
+.bar{height:5px;background:#26262b}.bar i{display:block;height:100%;width:0}
+.row{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px}
+.row button{min-width:38px;height:38px;border-radius:999px;border:1.5px solid #34363e;background:#1a1b20;color:#f1f0ea;font:600 13px Outfit,sans-serif;cursor:pointer;padding:0 10px}
+.row button.main{border:0;color:#111}
+.clk{font:400 30px/1 Anton,Impact,sans-serif;min-width:2.9em;text-align:center;font-variant-numeric:tabular-nums}
+.meta{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.6);border-radius:999px;padding:3px 10px;font-size:12px}`;
+async function openPip(){
+ if(!S)return;if(pip||pv){closePip();return}
+ try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}
+ if(window.documentPictureInPicture){
+  try{pip=await documentPictureInPicture.requestWindow({width:340,height:480})}catch(e){pip=null}
+  if(pip){const d=pip.document;
+   const ln=d.createElement('link');ln.rel='stylesheet';ln.href='https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;600&display=swap';d.head.appendChild(ln);
+   const st=d.createElement('style');st.textContent=PIPCSS;d.head.appendChild(st);d.title='Five Levels';
+   d.body.innerHTML='<div class="w"><div class="im" id="pIm"></div><div class="bar"><i id="pBar"></i></div><div class="row"><button id="pPrev" aria-label="Precedente">&#9664;</button><button id="pPause" class="main">Pausa</button><span class="clk" id="pClk">0:00</span><button id="pAdd">+30s</button><button id="pNext" aria-label="Successiva">&#9654;</button></div></div><span class="meta" id="pMeta"></span>';
+   const g=id=>d.getElementById(id);
+   g('pPrev').onclick=()=>S&&prev();g('pNext').onclick=()=>S&&next(false);g('pAdd').onclick=()=>$('sAdd').click();g('pPause').onclick=()=>{if(!S)return;if($('done').classList.contains('on')){pip.close();return}S.paused=!S.paused;paint()};
+   d.addEventListener('keydown',e=>{if(!S)return;if(e.key===' '){e.preventDefault();g('pPause').click()}else if(e.key==='ArrowRight')next(false);else if(e.key==='ArrowLeft')prev()});
+   pip.addEventListener('pagehide',()=>{pip=null;runTicker();$('sPip').textContent='Mini finestra'});
+   $('sPip').textContent='Chiudi mini finestra';runTicker();pipShow();return}
+ }
+ // ripiego: video Picture-in-Picture disegnato su canvas
+ try{const cv=document.createElement('canvas');cv.width=480;cv.height=640;const v=document.createElement('video');v.muted=true;v.playsInline=true;
+  pv={cv,v};drawPv();v.srcObject=cv.captureStream(4);await v.play();await v.requestPictureInPicture();
+  v.addEventListener('leavepictureinpicture',()=>{pv=null;$('sPip').textContent='Mini finestra'});
+  if('mediaSession' in navigator){const ms=navigator.mediaSession;try{ms.setActionHandler('nexttrack',()=>S&&next(false));ms.setActionHandler('previoustrack',()=>S&&prev());ms.setActionHandler('pause',()=>{if(S){S.paused=true;paint()}});ms.setActionHandler('play',()=>{if(S){S.paused=false;paint()}})}catch(e){}}
+  $('sPip').textContent='Chiudi mini finestra'}
+ catch(e){pv=null;$('sPip').textContent='Non supportata da questo browser';setTimeout(()=>{$('sPip').textContent='Mini finestra'},3000)}
+}
+function closePip(){try{pip&&pip.close()}catch(e){}pip=null;try{document.pictureInPictureElement&&document.exitPictureInPicture()}catch(e){}pv=null;$('sPip').textContent='Mini finestra'}
+function pipShow(){
+ if(pv)drawPv();if(!pip||!S)return;const d=pip.document,box=d.getElementById('pIm');
+ if($('done').classList.contains('on')){box.innerHTML='';const p=d.createElement('p');p.textContent=$('doneH').textContent+' '+$('doneTxt').textContent;box.appendChild(p);pipPaint();return}
+ const it=S.order[S.i];box.innerHTML='';
+ if(it){const im=d.createElement('img');im.src=it.url;im.alt='Reference';if(S.flips[S.i])im.style.transform='scaleX(-1)';if($('optGray').checked)im.style.filter='grayscale(1)';box.appendChild(im)}
+ else{const p=d.createElement('p');p.textContent=LV[cur].t+': '+LV[cur].f[S.i%LV[cur].f.length];box.appendChild(p)}
+ pipPaint();
+}
+function pipPaint(){
+ if(pv)drawPv();if(!pip||!S)return;const d=pip.document,w=S.left<=Math.min(10,S.dur*.15),c=COL[cur];
+ d.getElementById('pClk').textContent=fmt(S.left);d.getElementById('pClk').style.color=w?'#ff5b4a':'';
+ const b=d.getElementById('pBar');b.style.width=(100*(1-S.left/S.dur))+'%';b.style.background=w?'#ff5b4a':c;
+ const pb=d.getElementById('pPause');pb.style.background=c;pb.textContent=$('done').classList.contains('on')?'Chiudi':S.paused?'Riprendi':'Pausa';
+ d.getElementById('pMeta').textContent='LV-'+pad(cur+1)+' \u00b7 '+(S.i+1)+'/'+S.order.length;
+}
+function drawPv(){
+ if(!pv||!S)return;const x=pv.cv.getContext('2d'),W=480,H=640,it=S.order[S.i];x.fillStyle='#0e0e10';x.fillRect(0,0,W,H);
+ if(it){let im=imgCache[it.url];if(!im){im=new Image();im.crossOrigin='anonymous';im.onload=()=>drawPv();im.src=it.url;imgCache[it.url]=im}
+  if(im.complete&&im.naturalWidth){const r=Math.min(W/im.naturalWidth,(H-90)/im.naturalHeight),w=im.naturalWidth*r,h=im.naturalHeight*r;x.save();if(S.flips[S.i]){x.translate(W,0);x.scale(-1,1)}if($('optGray').checked)x.filter='grayscale(1)';try{x.drawImage(im,(W-w)/2,(H-90-h)/2,w,h)}catch(e){}x.restore()}}
+ const warn=S.left<=Math.min(10,S.dur*.15);x.fillStyle='#26262b';x.fillRect(0,H-90,W,6);x.fillStyle=warn?'#ff5b4a':COL[cur];x.fillRect(0,H-90,W*(1-S.left/S.dur),6);
+ x.fillStyle=warn?'#ff5b4a':'#f1f0ea';x.font='44px Anton, Impact, sans-serif';x.textAlign='center';x.fillText(S.paused?'II '+fmt(S.left):fmt(S.left),W/2,H-28);
+ x.font='16px Outfit, sans-serif';x.fillStyle='#a9abb3';x.textAlign='left';x.fillText('LV-'+pad(cur+1)+'  '+(S.i+1)+'/'+S.order.length,16,H-34);
+}
+$('sPip').addEventListener('click',openPip);
+document.addEventListener('keydown',e=>{if(S&&$('ses').classList.contains('on')&&(e.key==='p'||e.key==='P')&&!/INPUT|TEXTAREA/.test(document.activeElement.tagName))openPip()});
 $('start').addEventListener('click',start);
 $('sNext').addEventListener('click',()=>next(false));$('sPrev').addEventListener('click',prev);
 $('sPause').addEventListener('click',()=>{S.paused=!S.paused;paint()});
